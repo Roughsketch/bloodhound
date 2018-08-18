@@ -1,0 +1,18 @@
+[package]
+name = "bloodhound"
+version = "0.1.0"
+authors = ["Maid Dog <maiddogsrl@gmail.com>"]
+
+[dependencies]
+byteorder = "1.2"
+clap = "2.31"
+failure = "0.1"
+pancurses = "0.16"
+rayon = "1.0"
+
+[target.'cfg(windows)'.dependencies.winapi]
+version = "0.3"
+features = ["errhandlingapi", "memoryapi", "processthreadsapi", "winnt"]
+
+[target.'cfg(windows)'.dependencies.kernel32-sys]
+version = "0.2"

@@ -35,8 +35,14 @@ impl Address {
     }
 }
 
-impl Into<*mut c_void> for Address {
-    fn into(self) -> *mut c_void {
-        unsafe { transmute::<usize, *mut c_void>(self.0) }
+impl From<*mut c_void> for Address {
+    fn from(ptr: *mut c_void) -> Address {
+        Address::from_ptr(ptr)
+    }
+}
+
+impl From<Address> for *mut c_void {
+    fn from(addr: Address) -> *mut c_void {
+        addr.as_ptr()
     }
 }

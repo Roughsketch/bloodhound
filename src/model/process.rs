@@ -87,7 +87,7 @@ impl Process {
 
             //  If if fulfills the requirements, add it to regions
             if info.State == MEM_COMMIT && info.Protect & PAGE_GUARD == 0 && info.Type == MEM_PRIVATE || info.Type == MEM_MAPPED {
-                self.regions.push(Region::new(Address::from_ptr(info.BaseAddress), self.handle, info.RegionSize));
+                self.regions.push(Region::new(info.BaseAddress, self.handle, info.RegionSize));
             }
 
             addr.add(info.RegionSize);

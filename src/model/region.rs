@@ -22,10 +22,10 @@ pub struct Region {
 }
 
 impl Region {
-    pub fn new(base: Address, handle: Address, size: usize) -> Self {
+    pub fn new<A: Into<Address>, B: Into<Address>>(base: A, handle: B, size: usize) -> Self {
         Self {
-            base,
-            handle,
+            base: base.into(),
+            handle: handle.into(),
             size,
         }
     }

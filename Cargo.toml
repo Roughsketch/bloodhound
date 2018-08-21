@@ -9,6 +9,7 @@ clap = "2.31"
 failure = "0.1"
 pancurses = "0.16"
 rayon = "1.0"
+read-process-memory = "0.1"
 
 [target.'cfg(windows)'.dependencies.winapi]
 version = "0.3"

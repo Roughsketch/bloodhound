@@ -4,7 +4,7 @@ use model::region::Region;
 
 use failure::Error;
 use rayon::prelude::*;
-use winapi::um::errhandlingapi::GetLastError;
+use read_process_memory::{Pid, TryIntoProcessHandle};
 
 use std;
 use std::mem::size_of;
@@ -20,26 +20,9 @@ pub struct Process {
     regions: Vec<Region>,
 }
 
-impl Drop for Process {
-    fn drop(&mut self) {
-        unsafe {
-            use kernel32::CloseHandle;
-            CloseHandle(self.handle.as_ptr());
-        }
-    }
-}
-
 impl Process {
-    pub fn new(pid: u32) -> Result<Self, Error> {
-        use winapi::um::processthreadsapi::OpenProcess;
-        use winapi::um::winnt::PROCESS_ALL_ACCESS;
-
-        let handle = unsafe { 
-            let h = Address::from_ptr(OpenProcess(PROCESS_ALL_ACCESS, 0, pid));
-            let err = GetLastError();
-            ensure!(err == 0, ProcessError::OpenError(err));
-            h
-        };
+    pub fn new<P: Into<Pid>>(pid: P) -> Result<Self, Error> {
+        let handle = Address::from_ptr(pid.into().try_into_process_handle()?);
 
         Ok(Self {
             handle,
@@ -78,9 +61,9 @@ impl Process {
         loop {
             //  Get next memory region
             unsafe {
-                VirtualQueryEx(self.handle.as_ptr(), addr.as_ptr(), &mut info, size_of::<MEMORY_BASIC_INFORMATION>());
+                let result = VirtualQueryEx(self.handle.as_ptr(), addr.as_ptr(), &mut info, size_of::<MEMORY_BASIC_INFORMATION>());
 
-                if GetLastError() != 0 {
+                if result == 0 {
                     break;
                 }
             }

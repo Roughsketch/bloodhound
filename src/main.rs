@@ -7,6 +7,7 @@ extern crate byteorder;
 extern crate kernel32;
 extern crate pancurses;
 extern crate rayon;
+extern crate read_process_memory;
 extern crate winapi;
 
 use clap::{App, Arg};
